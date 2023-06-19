@@ -2,6 +2,6 @@ package com.puroblast.weatherappcompose.network.model
 
 data class RandomState(
 
-    val text : String = "ASD"
+    val text: String = "ASD"
 
 )
