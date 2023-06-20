@@ -85,5 +85,9 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:2.46.1")
     kapt ("com.google.dagger:hilt-android-compiler:2.46.1")
 
+    implementation ("androidx.navigation:navigation-compose:2.6.0")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 
 }
