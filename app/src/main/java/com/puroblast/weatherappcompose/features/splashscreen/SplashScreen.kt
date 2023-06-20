@@ -1,4 +1,4 @@
-package com.puroblast.weatherappcompose
+package com.puroblast.weatherappcompose.features.splashscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -14,7 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.puroblast.weatherappcompose.utils.Routes
+import com.puroblast.weatherappcompose.R
+import com.puroblast.weatherappcompose.features.Routes
 import kotlinx.coroutines.delay
 
 @Composable

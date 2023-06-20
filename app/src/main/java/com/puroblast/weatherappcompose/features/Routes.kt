@@ -1,4 +1,4 @@
-package com.puroblast.weatherappcompose.utils
+package com.puroblast.weatherappcompose.features
 
 object Routes {
 

@@ -3,9 +3,7 @@ package com.puroblast.weatherappcompose.features.weatherscreen.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.puroblast.weatherappcompose.network.model.RandomState
 import com.puroblast.weatherappcompose.repository.WeatherRepository
-import com.puroblast.weatherappcompose.repository.WeatherRepositoryImpl
 import com.puroblast.weatherappcompose.utils.CITY
 import com.puroblast.weatherappcompose.utils.TAG
 import com.puroblast.weatherappcompose.utils.TOKEN
@@ -22,7 +20,7 @@ class WeatherViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private val _state = MutableStateFlow(RandomState())
+    private val _state = MutableStateFlow(WeatherState())
     val state = _state.asStateFlow()
 
     fun collectData() {
@@ -32,7 +30,13 @@ class WeatherViewModel @Inject constructor(
             if (result.isSuccess) {
                 val body = result.getOrNull()
                 if (body != null) {
-                    _state.value = _state.value.copy(text = body.main.temp.toString())
+                    _state.value = _state.value.copy(
+                        temperature = body.main.temp,
+                        humidity = body.main.humidity,
+                        pressure = body.main.pressure,
+                        windSpeed = body.wind.speed,
+                        icon = body.weather[0].icon
+                    )
                 } else {
                     Log.d(TAG, "collectData: Body is Null")
                 }
