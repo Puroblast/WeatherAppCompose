@@ -21,6 +21,7 @@ import com.puroblast.weatherappcompose.features.weatherscreen.presentation.Weath
 import com.puroblast.weatherappcompose.features.weatherscreen.presentation.WeatherViewModel
 import com.puroblast.weatherappcompose.ui.theme.WeatherAppComposeTheme
 import com.puroblast.weatherappcompose.features.Routes
+import com.puroblast.weatherappcompose.features.weatherscreen.ui.WeatherScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -29,10 +30,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: WeatherViewModel by viewModels()
-        viewModel.collectData()
+        val weatherViewModel: WeatherViewModel by viewModels()
+        weatherViewModel.collectData()
+
         setContent {
-            val weatherState by viewModel.state.collectAsState()
             WeatherAppComposeTheme {
                 val navController = rememberNavController()
                 NavHost(
@@ -43,17 +44,11 @@ class MainActivity : ComponentActivity() {
                             SplashScreen(navController)
                         }
                         composable(route = Routes.WEATHER_SCREEN) {
-                            Kekw(modifier = Modifier.fillMaxSize(), viewModel, weatherState)
+                            WeatherScreen(navController, weatherViewModel)
                         }
                 }
             }
         }
     }
 
-    @Composable
-    fun Kekw(modifier: Modifier, viewModel: WeatherViewModel, weatherState: WeatherState) {
-        Box(modifier = modifier.fillMaxSize().background(Color.White)) {
-            Text(text = weatherState.temperature.toString())
-        }
-    }
 }

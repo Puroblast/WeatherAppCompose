@@ -10,11 +10,12 @@ import javax.inject.Inject
 class WeatherRepositoryImpl @Inject constructor(
     private val weatherApi: WeatherApi,
 ) : WeatherRepository {
-    override suspend fun collectWeatherData(q: String, appId: String): Result<WeatherData> {
+    override suspend fun collectWeatherData(q: String, appId: String , units: String): Result<WeatherData> {
         val weatherData = runCatchingCancellable {
             weatherApi.getWeatherData(
                 q,
-                appId
+                appId,
+                units
             )
         }
         return weatherData
