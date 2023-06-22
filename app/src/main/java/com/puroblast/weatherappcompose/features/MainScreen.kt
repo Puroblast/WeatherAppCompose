@@ -1,5 +1,9 @@
 package com.puroblast.weatherappcompose.features
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,11 +16,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.navigation
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.puroblast.weatherappcompose.R
 import com.puroblast.weatherappcompose.features.bottomnavbar.BottomNavItem
 import com.puroblast.weatherappcompose.features.bottomnavbar.BottomNavigationBar
@@ -27,10 +32,10 @@ import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.weathersc
 import com.puroblast.weatherappcompose.utils.extension.sharedViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val navController = rememberNavController()
+    val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     Scaffold(bottomBar = {
@@ -54,8 +59,12 @@ fun MainScreen() {
                     )
                 ),
                 onItemClick = {
-                    if (navBackStackEntry?.destination?.route != it.route) {
-                        navController.navigate(it.route)
+                    navController.navigate(it.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 },
                 navBackStackEntry = navBackStackEntry
@@ -68,7 +77,22 @@ fun MainScreen() {
                 .fillMaxSize()
                 .padding(bottom = paddingValues.calculateBottomPadding())
         ) {
-            NavHost(navController = navController, startDestination = Routes.MAIN_SCREEN) {
+            AnimatedNavHost(
+                navController = navController,
+                startDestination = Routes.MAIN_SCREEN,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { width -> width },
+                        animationSpec = snap(0)
+                    )
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { width -> -width },
+                        animationSpec = snap(0)
+                    )
+                }
+            ) {
                 navigation(startDestination = Routes.SPLASH_SCREEN, route = Routes.MAIN_SCREEN) {
                     composable(Routes.SPLASH_SCREEN) {
                         val viewModel = it.sharedViewModel<WeatherSharedViewModel>(navController)

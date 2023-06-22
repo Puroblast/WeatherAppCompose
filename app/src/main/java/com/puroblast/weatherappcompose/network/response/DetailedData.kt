@@ -1,9 +1,7 @@
 package com.puroblast.weatherappcompose.network.response
 
 import com.puroblast.weatherappcompose.utils.EMPTY_STRING
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class DetailedData(
 
     val weatherId: Int = 0,

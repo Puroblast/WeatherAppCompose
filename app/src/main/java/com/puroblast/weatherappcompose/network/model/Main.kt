@@ -1,8 +1,6 @@
 package com.puroblast.weatherappcompose.network.model
 
 
-import kotlinx.serialization.Serializable
-
 
 data class Main(
     val feelsLike: Double,
