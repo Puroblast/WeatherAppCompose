@@ -53,7 +53,11 @@ fun MainScreen() {
                         painterResource(id = R.drawable.baseline_timer_24)
                     )
                 ),
-                onItemClick = { navController.navigate(it.route) },
+                onItemClick = {
+                    if (navBackStackEntry?.destination?.route != it.route) {
+                        navController.navigate(it.route)
+                    }
+                },
                 navBackStackEntry = navBackStackEntry
             )
         }
