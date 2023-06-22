@@ -1,5 +1,8 @@
 package com.puroblast.weatherappcompose.network.model
 
+import kotlinx.serialization.Serializable
+
+
 data class Sys(
     val country: String,
     val id: Int,

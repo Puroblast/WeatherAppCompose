@@ -1,8 +1,7 @@
-package com.puroblast.weatherappcompose.features.weatherscreen.ui
+package com.puroblast.weatherappcompose.features.sharedviewmodelscreens.weatherscreen.ui
 
 
-import android.graphics.drawable.VectorDrawable
-import android.util.Log
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,18 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -29,20 +24,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.puroblast.weatherappcompose.R
-import com.puroblast.weatherappcompose.features.weatherscreen.presentation.WeatherViewModel
+import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.weatherscreen.presentation.WeatherState
 import com.puroblast.weatherappcompose.utils.CELSIUS
 import com.puroblast.weatherappcompose.utils.EMPTY_STRING
 import com.puroblast.weatherappcompose.utils.HUMIDITY
 import com.puroblast.weatherappcompose.utils.HUMIDITY_METRIC
 import com.puroblast.weatherappcompose.utils.PRESSURE
 import com.puroblast.weatherappcompose.utils.PRESSURE_METRIC
-import com.puroblast.weatherappcompose.utils.TAG
 import com.puroblast.weatherappcompose.utils.WIND
 import com.puroblast.weatherappcompose.utils.WIND_METRIC
 import java.util.Locale
@@ -52,9 +45,7 @@ import kotlin.math.roundToInt
 private var isDay: Boolean = true
 
 @Composable
-fun WeatherScreen(viewModel: WeatherViewModel) {
-
-    val weatherState by viewModel.state.collectAsState()
+fun WeatherScreen(weatherState : WeatherState) {
 
     Box(
         modifier = Modifier
@@ -64,7 +55,7 @@ fun WeatherScreen(viewModel: WeatherViewModel) {
     ) {
         Column(
             modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = checkWeatherId(weatherId = weatherState.weatherId),
@@ -79,7 +70,8 @@ fun WeatherScreen(viewModel: WeatherViewModel) {
                 },
                 fontSize = 32.sp,
                 fontStyle = FontStyle.Italic,
-                color = Color.White
+                color = Color.White,
+                textAlign = TextAlign.Center
             )
         }
 
@@ -185,3 +177,30 @@ fun CreateCard(cardName: String, cardValue: String) {
         }
     }
 }
+
+/*@Composable
+fun NavigationGraph(navController: NavHostController) {
+
+    NavHost(
+        navController = navController,
+        startDestination = Routes.SPLASH_SCREEN
+    ) {
+        composable(route = Routes.SPLASH_SCREEN) {
+
+            SplashScreen(navController)
+        }
+        composable(route = Routes.WEATHER_SCREEN) {
+            //WeatherScreen(weatherViewModel)
+            val parentEntry = remember(it){
+                navController.getBackStackEntry(Routes.SPLASH_SCREEN)
+            }
+            val parentViewModel = hiltViewModel<WeatherViewModel>(parentEntry)
+            WeatherScreen(parentViewModel)
+        }
+        composable(route = Routes.DETAILS_SCREEN) {
+            //detailsViewModel.collectData()
+            //DetailsScreen(viewModel = detailsViewModel)
+            DetailsScreen()
+        }
+    }
+}*/

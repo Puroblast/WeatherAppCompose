@@ -24,7 +24,8 @@ fun SplashScreen(navController: NavController) {
     Box(
         Modifier
             .fillMaxSize()
-            .padding(bottom = 50.dp)) {
+            .padding(bottom = 50.dp)
+    ) {
         LaunchedEffect(key1 = true) {
             delay(1000)
             navController.navigate(Routes.WEATHER_SCREEN) {

@@ -21,4 +21,25 @@ data class WeatherData(
     val visibility: Int,
     val weather: List<Weather>,
     val wind: Wind
-)
+) {
+    fun getDetailedData() : DetailedData {
+        return DetailedData(
+            weatherId = this.weather[0].id,
+            cityName = this.name,
+            description = this.weather[0].description,
+            temperature = this.main.temp,
+            minimalTemperature = this.main.tempMin,
+            maximalTemperature = this.main.tempMax,
+            humidity = this.main.humidity,
+            pressure = this.main.pressure,
+            windSpeed = this.wind.speed,
+            windDegree = this.wind.deg,
+            visibility = this.visibility,
+            cloudiness = this.clouds.all,
+            sunsetTime = this.sys.sunset,
+            sunriseTime = this.sys.sunrise
+        )
+}
+
+
+}

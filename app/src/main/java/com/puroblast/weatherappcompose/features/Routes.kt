@@ -4,5 +4,7 @@ object Routes {
 
     const val SPLASH_SCREEN = "splash_screen"
     const val WEATHER_SCREEN = "weather_screen"
+    const val DETAILS_SCREEN = "details_screen"
+    const val MAIN_SCREEN = "main_screen"
 
 }
