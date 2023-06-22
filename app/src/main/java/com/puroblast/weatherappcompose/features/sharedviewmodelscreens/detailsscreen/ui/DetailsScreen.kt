@@ -18,11 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.puroblast.weatherappcompose.R
 import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.detailsscreen.presentation.DetailsState
 import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.weatherscreen.ui.CreateCard
+import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.weatherscreen.ui.checkDayTime
 import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.weatherscreen.ui.checkWeatherId
 import com.puroblast.weatherappcompose.utils.CELSIUS
 import com.puroblast.weatherappcompose.utils.EMPTY_STRING
@@ -41,7 +43,7 @@ fun DetailsScreen(detailsState: DetailsState) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(checkDayTime(detailsState.sunsetTime, detailsState.sunriseTime))
             .padding(10.dp)
     ) {
         Column(
@@ -61,7 +63,8 @@ fun DetailsScreen(detailsState: DetailsState) {
                 },
                 fontSize = 32.sp,
                 fontStyle = FontStyle.Italic,
-                color = Color.White
+                color = Color.White,
+                textAlign = TextAlign.Center
             )
         }
 
