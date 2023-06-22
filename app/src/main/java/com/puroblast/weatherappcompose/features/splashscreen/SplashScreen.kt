@@ -16,11 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.puroblast.weatherappcompose.R
 import com.puroblast.weatherappcompose.features.Routes
+import com.puroblast.weatherappcompose.utils.EMPTY_STRING
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController){
-    Box(Modifier.fillMaxSize().padding(bottom = 50.dp)) {
+fun SplashScreen(navController: NavController) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(bottom = 50.dp)) {
         LaunchedEffect(key1 = true) {
             delay(1000)
             navController.navigate(Routes.WEATHER_SCREEN) {
@@ -32,15 +36,17 @@ fun SplashScreen(navController: NavController){
 
         Image(
             painter = painterResource(id = R.drawable.baseline_timer_24),
-            contentDescription = "",
-            modifier = Modifier.align(Alignment.Center).fillMaxSize()
+            contentDescription = EMPTY_STRING,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxSize()
         )
 
         CircularProgressIndicator(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .size(64.dp),
-            strokeWidth = 6.dp ,
+            strokeWidth = 6.dp,
             color = Color.Green
         )
 

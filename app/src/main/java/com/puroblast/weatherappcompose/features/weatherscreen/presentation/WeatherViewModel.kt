@@ -34,11 +34,11 @@ class WeatherViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         weatherId = body.weather[0].id,
                         temperature = body.main.temp,
-                        feelsLike = body.main.feelsLike,
                         humidity = body.main.humidity,
                         pressure = body.main.pressure,
                         windSpeed = body.wind.speed,
                         sunsetTime = body.sys.sunset,
+                        sunriseTime = body.sys.sunrise,
                         cityName = body.name,
                         description = body.weather[0].description
                     )

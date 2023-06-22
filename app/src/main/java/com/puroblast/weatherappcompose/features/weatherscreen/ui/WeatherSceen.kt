@@ -2,6 +2,7 @@ package com.puroblast.weatherappcompose.features.weatherscreen.ui
 
 
 import android.graphics.drawable.VectorDrawable
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,26 +29,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.puroblast.weatherappcompose.R
 import com.puroblast.weatherappcompose.features.weatherscreen.presentation.WeatherViewModel
+import com.puroblast.weatherappcompose.utils.CELSIUS
+import com.puroblast.weatherappcompose.utils.EMPTY_STRING
+import com.puroblast.weatherappcompose.utils.HUMIDITY
+import com.puroblast.weatherappcompose.utils.HUMIDITY_METRIC
+import com.puroblast.weatherappcompose.utils.PRESSURE
+import com.puroblast.weatherappcompose.utils.PRESSURE_METRIC
+import com.puroblast.weatherappcompose.utils.TAG
+import com.puroblast.weatherappcompose.utils.WIND
+import com.puroblast.weatherappcompose.utils.WIND_METRIC
+import java.util.Locale
 import kotlin.math.roundToInt
 
 
 private var isDay: Boolean = true
 
 @Composable
-fun WeatherScreen(navHostController: NavHostController, viewModel: WeatherViewModel) {
+fun WeatherScreen(viewModel: WeatherViewModel) {
 
     val weatherState by viewModel.state.collectAsState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(checkDayTime(weatherState.sunsetTime))
+            .background(checkDayTime(weatherState.sunsetTime, weatherState.sunriseTime))
             .padding(10.dp)
     ) {
         Column(
@@ -56,11 +68,15 @@ fun WeatherScreen(navHostController: NavHostController, viewModel: WeatherViewMo
         ) {
             Image(
                 painter = checkWeatherId(weatherId = weatherState.weatherId),
-                contentDescription = ""
+                contentDescription = EMPTY_STRING
             )
             Spacer(modifier = Modifier.size(15.dp))
             Text(
-                text = weatherState.description,
+                text = weatherState.description.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(
+                        Locale.ROOT
+                    ) else it.toString()
+                },
                 fontSize = 32.sp,
                 fontStyle = FontStyle.Italic,
                 color = Color.White
@@ -80,12 +96,12 @@ fun WeatherScreen(navHostController: NavHostController, viewModel: WeatherViewMo
             Spacer(modifier = Modifier.size(25.dp))
             Row {
                 Image(
-                    painter = painterResource(id = R.drawable.hot_temperature),
-                    contentDescription = "",
+                    painter = painterResource(id = if (weatherState.temperature > 10) R.drawable.hot_temperature else R.drawable.cold_temperature),
+                    contentDescription = EMPTY_STRING,
                     modifier = Modifier.size(40.dp)
                 )
                 Text(
-                    text = weatherState.temperature.roundToInt().toString() + " \u2103",
+                    text = weatherState.temperature.roundToInt().toString() + CELSIUS,
                     fontSize = 32.sp,
                     fontStyle = FontStyle.Italic,
                     color = Color.White
@@ -102,9 +118,18 @@ fun WeatherScreen(navHostController: NavHostController, viewModel: WeatherViewMo
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
 
-            CreateCard(cardName = "Pressure", cardValue = weatherState.pressure.toString() + " Pa")
-            CreateCard(cardName = "Humidity", cardValue = weatherState.humidity.toString() + " %")
-            CreateCard(cardName = "Wind", cardValue = weatherState.windSpeed.toString() + " m/s")
+            CreateCard(
+                cardName = PRESSURE,
+                cardValue = weatherState.pressure.toString() + PRESSURE_METRIC
+            )
+            CreateCard(
+                cardName = HUMIDITY,
+                cardValue = weatherState.humidity.toString() + HUMIDITY_METRIC
+            )
+            CreateCard(
+                cardName = WIND,
+                cardValue = weatherState.windSpeed.toInt().toString() + WIND_METRIC
+            )
 
         }
 
@@ -114,12 +139,12 @@ fun WeatherScreen(navHostController: NavHostController, viewModel: WeatherViewMo
 }
 
 @Composable
-fun checkDayTime(sunsetTime: Int): Color {
-    if (System.currentTimeMillis() / 1000 - sunsetTime >= 0) {
-        isDay = false
-        return colorResource(id = R.color.weather_night)
+fun checkDayTime(sunsetTime: Int, sunriseTime: Int): Color {
+    if (System.currentTimeMillis() / 1000 in sunriseTime until sunsetTime) {
+        return colorResource(R.color.weather_day)
     }
-    return colorResource(R.color.weather_day)
+    isDay = false
+    return colorResource(id = R.color.weather_night)
 }
 
 @Composable
@@ -140,7 +165,7 @@ fun checkWeatherId(weatherId: Int): Painter {
 }
 
 @Composable
-fun CreateCard(cardName : String , cardValue : String) {
+fun CreateCard(cardName: String, cardValue: String) {
     Card(
         modifier = Modifier
             .size(100.dp)
