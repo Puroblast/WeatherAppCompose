@@ -36,11 +36,11 @@ fun SplashScreen(navController: NavController) {
         }
 
         Image(
-            painter = painterResource(id = R.drawable.baseline_timer_24),
+            painter = painterResource(id = R.drawable.baseline_cloud_splash_24),
             contentDescription = EMPTY_STRING,
             modifier = Modifier
                 .align(Alignment.Center)
-                .fillMaxSize()
+                .size(300.dp)
         )
 
         CircularProgressIndicator(

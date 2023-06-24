@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.WeatherAppCompose.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/baseline_cloud_splash_24</item>
+        <item name="postSplashScreenTheme">@style/Theme.WeatherAppCompose</item>
+
+
+    </style>
+</resources>

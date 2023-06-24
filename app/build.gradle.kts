@@ -91,6 +91,8 @@ dependencies {
 
     implementation ("com.google.accompanist:accompanist-navigation-animation:0.25.0")
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 
 
 
