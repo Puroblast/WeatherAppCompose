@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="weather_night">#4E5D9C</color>
+    <color name="weather_day">#54B7FA</color>
+    <color name="card_color">#758AE5</color>
 </resources>
