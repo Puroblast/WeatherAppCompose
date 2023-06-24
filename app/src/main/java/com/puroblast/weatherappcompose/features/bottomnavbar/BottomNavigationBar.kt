@@ -26,8 +26,7 @@ fun BottomNavigationBar(
 ) {
 
     NavigationBar(
-        modifier = modifier,
-        containerColor = Color.DarkGray
+        modifier = modifier, containerColor = Color.DarkGray
     ) {
         val currentRoute = navBackStackEntry?.destination?.route
 
@@ -36,8 +35,7 @@ fun BottomNavigationBar(
             NavigationBarItem(selected = selected,
                 onClick = { onItemClick(item) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Green,
-                    unselectedIconColor = Color.Gray
+                    selectedIconColor = Color.Green, unselectedIconColor = Color.Gray
                 ),
                 icon = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {

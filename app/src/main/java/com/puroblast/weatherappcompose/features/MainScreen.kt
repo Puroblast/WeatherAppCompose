@@ -11,11 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -25,6 +24,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.puroblast.weatherappcompose.R
 import com.puroblast.weatherappcompose.features.bottomnavbar.BottomNavItem
 import com.puroblast.weatherappcompose.features.bottomnavbar.BottomNavigationBar
+import com.puroblast.weatherappcompose.features.forecastscreen.presentation.ForecastViewModel
+import com.puroblast.weatherappcompose.features.forecastscreen.ui.ForecastScreen
 import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.detailsscreen.ui.DetailsScreen
 import com.puroblast.weatherappcompose.features.splashscreen.SplashScreen
 import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.WeatherSharedViewModel
@@ -37,6 +38,7 @@ import com.puroblast.weatherappcompose.utils.extension.sharedViewModel
 fun MainScreen() {
     val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val foreCastViewModel: ForecastViewModel = hiltViewModel()
 
     Scaffold(bottomBar = {
         if (navBackStackEntry?.destination?.route != Routes.SPLASH_SCREEN) {
@@ -45,20 +47,17 @@ fun MainScreen() {
                     BottomNavItem(
                         "Weather",
                         Routes.WEATHER_SCREEN,
-                        painterResource(id = R.drawable.baseline_timer_24)
-                    ),
-                    BottomNavItem(
+                        painterResource(id = R.drawable.baseline_cloud_24)
+                    ), BottomNavItem(
                         "Details",
                         Routes.DETAILS_SCREEN,
-                        painterResource(id = R.drawable.baseline_timer_24)
-                    ),
-                    BottomNavItem(
-                        "Weather",
-                        Routes.WEATHER_SCREEN,
+                        painterResource(id = R.drawable.baseline_density_small_24)
+                    ), BottomNavItem(
+                        "Forecast",
+                        Routes.FORECAST_SCREEN,
                         painterResource(id = R.drawable.baseline_timer_24)
                     )
-                ),
-                onItemClick = {
+                ), onItemClick = {
                     navController.navigate(it.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
@@ -66,8 +65,7 @@ fun MainScreen() {
                         launchSingleTop = true
                         restoreState = true
                     }
-                },
-                navBackStackEntry = navBackStackEntry
+                }, navBackStackEntry = navBackStackEntry
             )
         }
 
@@ -77,43 +75,33 @@ fun MainScreen() {
                 .fillMaxSize()
                 .padding(bottom = paddingValues.calculateBottomPadding())
         ) {
-            AnimatedNavHost(
-                navController = navController,
+            AnimatedNavHost(navController = navController,
                 startDestination = Routes.MAIN_SCREEN,
                 enterTransition = {
                     slideInHorizontally(
-                        initialOffsetX = { width -> width },
-                        animationSpec = snap(0)
+                        initialOffsetX = { width -> width }, animationSpec = snap(0)
                     )
                 },
                 exitTransition = {
                     slideOutHorizontally(
-                        targetOffsetX = { width -> -width },
-                        animationSpec = snap(0)
+                        targetOffsetX = { width -> -width }, animationSpec = snap(0)
                     )
-                }
-            ) {
+                }) {
                 navigation(startDestination = Routes.SPLASH_SCREEN, route = Routes.MAIN_SCREEN) {
                     composable(Routes.SPLASH_SCREEN) {
                         val viewModel = it.sharedViewModel<WeatherSharedViewModel>(navController)
-                        viewModel.collectData()
                         SplashScreen(navController)
                     }
                     composable(Routes.WEATHER_SCREEN) {
                         val viewModel = it.sharedViewModel<WeatherSharedViewModel>(navController)
-                        LaunchedEffect(key1 = true) {
-                            viewModel.setupWeatherState()
-                        }
-                        val weatherState = viewModel.weatherState.collectAsState().value
-                        WeatherScreen(weatherState)
+                        WeatherScreen(viewModel)
                     }
                     composable(Routes.DETAILS_SCREEN) {
                         val viewModel = it.sharedViewModel<WeatherSharedViewModel>(navController)
-                        LaunchedEffect(key1 = true) {
-                            viewModel.setupDetailsState()
-                        }
-                        val detailsState = viewModel.detailsState.collectAsState().value
-                        DetailsScreen(detailsState)
+                        DetailsScreen(viewModel)
+                    }
+                    composable(Routes.FORECAST_SCREEN) {
+                        ForecastScreen(foreCastViewModel)
                     }
                 }
             }

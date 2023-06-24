@@ -11,8 +11,8 @@ data class WeatherState(
     val humidity: Int = 0,
     val pressure: Int = 0,
     val windSpeed: Double = 0.00,
-    val sunsetTime: Int = 0,
-    val sunriseTime: Int = 0,
-    val clouds : Int = 0
+    val sunsetTime: Long = 0,
+    val sunriseTime: Long = 0,
+    val clouds: Int = 0
 
 )

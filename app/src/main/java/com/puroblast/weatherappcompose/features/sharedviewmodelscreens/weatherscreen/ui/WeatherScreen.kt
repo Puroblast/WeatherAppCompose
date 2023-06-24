@@ -1,7 +1,6 @@
 package com.puroblast.weatherappcompose.features.sharedviewmodelscreens.weatherscreen.ui
 
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +16,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -26,10 +27,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.puroblast.weatherappcompose.R
-import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.weatherscreen.presentation.WeatherState
+import com.puroblast.weatherappcompose.features.sharedviewmodelscreens.WeatherSharedViewModel
 import com.puroblast.weatherappcompose.utils.CELSIUS
 import com.puroblast.weatherappcompose.utils.EMPTY_STRING
 import com.puroblast.weatherappcompose.utils.HUMIDITY
@@ -45,7 +47,12 @@ import kotlin.math.roundToInt
 private var isDay: Boolean = true
 
 @Composable
-fun WeatherScreen(weatherState : WeatherState) {
+fun WeatherScreen(viewModel: WeatherSharedViewModel) {
+
+    LaunchedEffect(key1 = true) {
+        viewModel.setupWeatherState()
+    }
+    val weatherState = viewModel.weatherState.collectAsState().value
 
     Box(
         modifier = Modifier
@@ -67,11 +74,7 @@ fun WeatherScreen(weatherState : WeatherState) {
                     if (it.isLowerCase()) it.titlecase(
                         Locale.ROOT
                     ) else it.toString()
-                },
-                fontSize = 32.sp,
-                fontStyle = FontStyle.Italic,
-                color = Color.White,
-                textAlign = TextAlign.Center
+                }, fontSize = 32.sp, color = Color.White, textAlign = TextAlign.Center
             )
         }
 
@@ -80,12 +83,9 @@ fun WeatherScreen(weatherState : WeatherState) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = weatherState.cityName,
-                fontSize = 32.sp,
-                fontStyle = FontStyle.Italic,
-                color = Color.White
+                text = weatherState.cityName, fontSize = 32.sp, color = Color.White
             )
-            Spacer(modifier = Modifier.size(25.dp))
+            Spacer(modifier = Modifier.size(10.dp))
             Row {
                 Image(
                     painter = painterResource(id = if (weatherState.temperature > 10) R.drawable.hot_temperature else R.drawable.cold_temperature),
@@ -112,15 +112,18 @@ fun WeatherScreen(weatherState : WeatherState) {
 
             CreateCard(
                 cardName = PRESSURE,
-                cardValue = weatherState.pressure.toString() + PRESSURE_METRIC
+                cardValue = weatherState.pressure.toString() + PRESSURE_METRIC,
+                cardSize = 120.dp
             )
             CreateCard(
                 cardName = HUMIDITY,
-                cardValue = weatherState.humidity.toString() + HUMIDITY_METRIC
+                cardValue = weatherState.humidity.toString() + HUMIDITY_METRIC,
+                cardSize = 120.dp
             )
             CreateCard(
                 cardName = WIND,
-                cardValue = weatherState.windSpeed.toInt().toString() + WIND_METRIC
+                cardValue = weatherState.windSpeed.toInt().toString() + WIND_METRIC,
+                cardSize = 120.dp
             )
 
         }
@@ -131,7 +134,7 @@ fun WeatherScreen(weatherState : WeatherState) {
 }
 
 @Composable
-fun checkDayTime(sunsetTime: Int, sunriseTime: Int): Color {
+fun checkDayTime(sunsetTime: Long, sunriseTime: Long): Color {
     if (System.currentTimeMillis() / 1000 in sunriseTime until sunsetTime) {
         return colorResource(R.color.weather_day)
     }
@@ -157,14 +160,15 @@ fun checkWeatherId(weatherId: Int): Painter {
 }
 
 @Composable
-fun CreateCard(cardName: String, cardValue: String) {
+fun CreateCard(cardName: String, cardValue: String, cardSize: Dp) {
     Card(
         modifier = Modifier
-            .size(100.dp)
-            .alpha(0.8F),
+            .size(cardSize)
+            .alpha(0.8F)
+            .padding(bottom = 5.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(R.color.card_color),
-            contentColor = Color.White
+            contentColor = Color.White,
         )
     ) {
         Column(
@@ -172,35 +176,10 @@ fun CreateCard(cardName: String, cardValue: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = cardName)
-            Text(text = cardValue)
+            Text(text = cardName, textAlign = TextAlign.Center)
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(text = cardValue, textAlign = TextAlign.Center)
         }
     }
 }
 
-/*@Composable
-fun NavigationGraph(navController: NavHostController) {
-
-    NavHost(
-        navController = navController,
-        startDestination = Routes.SPLASH_SCREEN
-    ) {
-        composable(route = Routes.SPLASH_SCREEN) {
-
-            SplashScreen(navController)
-        }
-        composable(route = Routes.WEATHER_SCREEN) {
-            //WeatherScreen(weatherViewModel)
-            val parentEntry = remember(it){
-                navController.getBackStackEntry(Routes.SPLASH_SCREEN)
-            }
-            val parentViewModel = hiltViewModel<WeatherViewModel>(parentEntry)
-            WeatherScreen(parentViewModel)
-        }
-        composable(route = Routes.DETAILS_SCREEN) {
-            //detailsViewModel.collectData()
-            //DetailsScreen(viewModel = detailsViewModel)
-            DetailsScreen()
-        }
-    }
-}*/

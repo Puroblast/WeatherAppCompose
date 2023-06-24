@@ -27,7 +27,11 @@ class WeatherSharedViewModel @Inject constructor(
     private val _detailsState = MutableStateFlow(DetailsState())
     val detailsState = _detailsState.asStateFlow()
 
-    fun collectData() {
+    init {
+        collectData()
+    }
+
+    private fun collectData() {
         viewModelScope.launch {
             _body = weatherRepository.collectWeatherData(CITY, TOKEN, UNITS)
                 .getOrElse { DetailedData() }
@@ -56,6 +60,7 @@ class WeatherSharedViewModel @Inject constructor(
             temperature = _body.temperature,
             minimalTemperature = _body.minimalTemperature,
             maximalTemperature = _body.maximalTemperature,
+            feelsLike = _body.feelsLike,
             humidity = _body.humidity,
             pressure = _body.pressure,
             windSpeed = _body.windSpeed,
